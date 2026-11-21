@@ -382,7 +382,7 @@ export default function Home() {
         </section>
 
         <footer className="pb-6 text-center text-xs text-slate-400">
-          Prototype for TRIANGULATE. Powered by Claude. {LABELS.join(" / ")} profile is a study aid only.
+          Prototype for TRIANGULATE. Powered by Gemini. {LABELS.join(" / ")} profile is a study aid only.
         </footer>
       </main>
     </div>

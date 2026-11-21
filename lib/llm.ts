@@ -1,6 +1,6 @@
-import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenAI, ThinkingLevel } from "@google/genai";
 
-const MODEL = process.env.ANTHROPIC_MODEL || "claude-haiku-5-5";
+const MODEL = process.env.GEMINI_MODEL || "gemini-3.5-flash-lite";
 
 export class LlmError extends Error {
   status: number;
@@ -12,19 +12,25 @@ export class LlmError extends Error {
 
 /** Call the model and parse a strict-JSON reply. Hard 8s timeout to stay under Vercel's 10s limit. */
 export async function callJson<T>(system: string, user: string, maxTokens: number): Promise<T> {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) throw new LlmError("Server is missing ANTHROPIC_API_KEY. See .env.local.example.", 500);
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new LlmError("Server is missing GEMINI_API_KEY. See .env.local.example.", 500);
 
-  const client = new Anthropic({ apiKey, timeout: 8000, maxRetries: 0 });
+  const ai = new GoogleGenAI({ apiKey });
   let text = "";
   try {
-    const res = await client.messages.create({
+    const res = await ai.models.generateContent({
       model: MODEL,
-      max_tokens: maxTokens,
-      system,
-      messages: [{ role: "user", content: user }],
+      contents: user,
+      config: {
+        systemInstruction: system,
+        responseMimeType: "application/json",
+        maxOutputTokens: maxTokens,
+        temperature: 0.4,
+        abortSignal: AbortSignal.timeout(8500),
+        thinkingConfig: { thinkingLevel: ThinkingLevel.MINIMAL },
+      },
     });
-    text = res.content.map((b) => (b.type === "text" ? b.text : "")).join("");
+    text = res.text ?? "";
   } catch {
     throw new LlmError("The AI service was slow or unavailable. Please try again.", 504);
   }
