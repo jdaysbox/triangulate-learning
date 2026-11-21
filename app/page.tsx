@@ -3,6 +3,7 @@ import { useState } from "react";
 import AuditoryPodcastCard from "@/components/AuditoryPodcastCard";
 import TactileSandboxCard from "@/components/TactileSandboxCard";
 import VisualDiagramCard from "@/components/VisualDiagramCard";
+import { extractText, MAX_CHARS } from "@/lib/extractText";
 import type { Profile } from "@/app/api/assess/route";
 import type { Transformed } from "@/app/api/transform/route";
 
@@ -144,24 +145,27 @@ export default function Home() {
     }
   }
 
-  function onFile(e: React.ChangeEvent<HTMLInputElement>) {
+  async function onFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     e.target.value = "";
     setFileMsg("");
     if (!file) return;
-    const name = file.name.toLowerCase();
-    if (!name.endsWith(".txt") && !name.endsWith(".md")) {
-      setFileMsg("Only .txt and .md files are supported. For PDFs or Word docs, please copy and paste the text instead.");
+    if (file.size > 25 * 1024 * 1024) {
+      setFileMsg("That file is over 25 MB. Please paste the relevant text instead.");
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      const text = String(reader.result ?? "");
-      setMaterial(text.slice(0, 8000));
-      setFileMsg(text.length > 8000 ? "File was longer than 8,000 characters and was truncated." : `Loaded ${file.name}.`);
-    };
-    reader.onerror = () => setFileMsg("Could not read that file. Try pasting the text instead.");
-    reader.readAsText(file);
+    setFileMsg(`Reading ${file.name}...`);
+    try {
+      const text = await extractText(file);
+      setMaterial(text.slice(0, MAX_CHARS));
+      setFileMsg(
+        text.length > MAX_CHARS
+          ? `Loaded ${file.name}, truncated to the first ${MAX_CHARS.toLocaleString()} characters.`
+          : `Loaded ${file.name}.`,
+      );
+    } catch (err) {
+      setFileMsg(err instanceof Error ? err.message : "Could not read that file. Try pasting the text instead.");
+    }
   }
 
   const bars = profile
@@ -350,8 +354,8 @@ export default function Home() {
               Load Sample Lecture Notes
             </button>
             <label className={`nm-pill px-3.5 py-2 text-[13px] ${profile ? "cursor-pointer" : "cursor-not-allowed opacity-50"}`}>
-              Upload .txt / .md
-              <input type="file" accept=".txt,.md,text/plain,text/markdown" className="hidden" disabled={!profile} onChange={onFile} />
+              Upload PDF / PPTX / TXT
+              <input type="file" accept=".pdf,.pptx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,text/plain,text/markdown" className="hidden" disabled={!profile} onChange={onFile} />
             </label>
           </div>
           {fileMsg && <p className="mb-2 text-[12px] text-ink-2">{fileMsg}</p>}
