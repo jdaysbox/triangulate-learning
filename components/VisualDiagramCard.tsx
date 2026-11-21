@@ -1,4 +1,5 @@
 import MathText from "./MathText";
+import FlowDiagram from "./FlowDiagram";
 
 interface VisualDiagramCardProps {
   title: string;
@@ -36,7 +37,7 @@ export default function VisualDiagramCard({
       {asciiDiagram && (
         <div className="mb-4">
           <p className="nm-micro mb-1">Concept Diagram</p>
-          <pre className="nm-inset overflow-x-auto p-4 font-mono text-xs leading-snug text-ink">{asciiDiagram}</pre>
+          <FlowDiagram source={asciiDiagram} />
         </div>
       )}
       {keyTable && (
