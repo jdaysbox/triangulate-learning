@@ -20,21 +20,21 @@ export default function TactileSandboxCard({
   const [isRevealed, setIsRevealed] = useState(false);
 
   return (
-    <div className={`rounded-xl border p-6 shadow-sm transition-all ${isDominant ? "border-emerald-500 bg-emerald-50/40 ring-2 ring-emerald-200" : "border-slate-200 bg-white"}`}>
+    <div className={`nm-card nm-crop p-6 ${isDominant ? "nm-card-primary" : ""}`}>
       <div className="mb-4 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="rounded-md bg-emerald-100 px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-emerald-800">Tactile • {percentage}%</span>
-          {isDominant && <span className="rounded-full bg-emerald-600 px-2.5 py-0.5 text-xs font-semibold text-white">Primary Match</span>}
+          <span className="nm-badge border border-white/40 bg-[#c9cacd] uppercase tracking-wide text-ink">Tactile • {percentage}%</span>
+          {isDominant && <span className="nm-badge bg-obsidian text-white">Primary Match</span>}
         </div>
-        <span className="text-xs font-medium text-slate-500">Active Recall Drill</span>
+        <span className="nm-micro">Active Recall Drill</span>
       </div>
-      <h3 className="mb-3 text-lg font-bold text-slate-900">{title}</h3>
-      <div className="mb-4 rounded-lg border border-emerald-200 bg-white p-4 text-sm text-slate-800">
-        <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-emerald-700">Hands-On Challenge</p>
+      <h3 className="mb-3 text-[20px] font-medium tracking-[-0.01em] text-ink">{title}</h3>
+      <div className="nm-inset mb-4 p-4 text-[13px] text-ink">
+        <p className="nm-micro mb-1">Hands-On Challenge</p>
         <p className="whitespace-pre-line font-medium">{practiceProblem}</p>
       </div>
       <div className="mb-4">
-        <label htmlFor="tactile-scratchpad" className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-600">Your Working Scratchpad (Attempt before revealing)</label>
+        <label htmlFor="tactile-scratchpad" className="nm-micro mb-1.5 block">Your Working Scratchpad (Attempt before revealing)</label>
         <textarea
           id="tactile-scratchpad"
           rows={3}
@@ -42,18 +42,18 @@ export default function TactileSandboxCard({
           value={userAttempt}
           onChange={(e) => setUserAttempt(e.target.value)}
           placeholder="Write your equations, code steps, or rough logic here..."
-          className="w-full rounded-lg border border-slate-300 bg-slate-50 p-3 font-mono text-sm text-slate-900 placeholder-slate-400 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-200"
+          className="nm-field font-mono text-[13px]"
         />
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <button type="button" onClick={() => setIsRevealed((prev) => !prev)} className="rounded-lg bg-emerald-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-emerald-700">
+        <button type="button" onClick={() => setIsRevealed((prev) => !prev)} className="nm-dark px-4 py-2 text-xs">
           {isRevealed ? "Hide Step-by-Step Breakdown" : userAttempt.trim().length > 0 ? "Check Work & Reveal Solution" : "Reveal Step-by-Step Hint & Solution"}
         </button>
-        {userAttempt.trim().length > 0 && !isRevealed && <span className="text-xs font-medium text-emerald-700">✓ Attempt logged ({userAttempt.trim().length} chars)</span>}
+        {userAttempt.trim().length > 0 && !isRevealed && <span className="text-xs font-medium text-pos">✓ Attempt logged ({userAttempt.trim().length} chars)</span>}
       </div>
       {isRevealed && (
-        <div className="mt-4 rounded-lg border border-slate-200 bg-slate-900 p-4 text-sm text-slate-100">
-          <p className="mb-1.5 text-xs font-bold uppercase tracking-wider text-emerald-400">Step-by-Step Walkthrough & Solution</p>
+        <div className="mt-4 rounded-xl bg-obsidian p-4 text-[13px] text-slate-100 shadow-[inset_0_2px_6px_rgba(0,0,0,0.4)]">
+          <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wider text-[#9fa2a6]">Step-by-Step Walkthrough & Solution</p>
           <p className="whitespace-pre-line leading-relaxed text-slate-200">{stepByStepHint}</p>
         </div>
       )}

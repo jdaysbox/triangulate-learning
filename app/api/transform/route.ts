@@ -18,6 +18,8 @@ Return ONLY JSON, no markdown fences, with exactly this shape (use \\n for newli
 {"summary_header":"one-sentence topic summary","visual_module":{"title":"","ascii_diagram":"simple monospace ASCII diagram/flow, max 12 lines, under 60 columns","key_table":"table with | separators: a header row then 4-6 rows, 2-3 columns (e.g. Term | Rule | Equation). Write every math expression as LaTeX wrapped in single dollar signs like $\\\\frac{W}{Q_h}$. Use LaTeX ONLY in key_table, never elsewhere"},"auditory_module":{"title":"","podcast_script":"conversational 2-minute-style spoken script, ~150-200 words, no markup or symbols that read badly aloud","mnemonics":["2-3 memorable hooks"]},"tactile_module":{"title":"","practice_problem":"one concrete worked-style problem to attempt","step_by_step_hint":"numbered steps ending with the final answer"},"ai_verification_note":"one sentence telling the student what to double-check against their syllabus"}`;
 
 const str = (v: unknown, max: number) => (isStr(v) ? v.slice(0, max) : "");
+// LaTeX ($...$) is only rendered in key_table; elsewhere strip the dollar signs so they never show raw.
+const plain = (v: unknown, max: number) => str(v, max).replace(/\$/g, "");
 
 export async function POST(req: Request) {
   let body: { profile?: Record<string, unknown>; courseMaterial?: unknown };
@@ -52,18 +54,18 @@ export async function POST(req: Request) {
       summary_header: str(r.summary_header, 300),
       visual_module: {
         title: str(r.visual_module?.title, 120) || "Visual Map",
-        ascii_diagram: str(r.visual_module?.ascii_diagram, 2000),
+        ascii_diagram: plain(r.visual_module?.ascii_diagram, 2000),
         key_table: str(r.visual_module?.key_table, 2000),
       },
       auditory_module: {
         title: str(r.auditory_module?.title, 120) || "Audio Explainer",
-        podcast_script: str(r.auditory_module?.podcast_script, 2500),
-        mnemonics: Array.isArray(mn) ? mn.filter(isStr).slice(0, 4) : [],
+        podcast_script: plain(r.auditory_module?.podcast_script, 2500),
+        mnemonics: Array.isArray(mn) ? mn.filter(isStr).map((m) => m.replace(/\$/g, "")).slice(0, 4) : [],
       },
       tactile_module: {
         title: str(r.tactile_module?.title, 120) || "Practice Drill",
-        practice_problem: str(r.tactile_module?.practice_problem, 1500),
-        step_by_step_hint: str(r.tactile_module?.step_by_step_hint, 2500),
+        practice_problem: plain(r.tactile_module?.practice_problem, 1500),
+        step_by_step_hint: plain(r.tactile_module?.step_by_step_hint, 2500),
       },
       ai_verification_note:
         str(r.ai_verification_note, 400) || "Verify all derivations and formulas against your syllabus and textbook.",

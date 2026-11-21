@@ -1,26 +1,194 @@
 @import "tailwindcss";
 
+/* Tactile Monochrome Neumorphism: cool-gray hardware surfaces, top-left light source. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --backdrop: #e2e3e5;
+  --canvas: #d1d2d4;
+  --raised: #dcdde0;
+  --inset: #c9cacd;
+  --obsidian: #1e1f22;
+  --obsidian-active: #2e3035;
+  --ink: #18191b;
+  --ink-2: #5e6064;
+  --ink-3: #8a8d91;
+  --pos: #388e6c;
+  --hi: rgba(255, 255, 255, 0.6);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-backdrop: var(--backdrop);
+  --color-canvas: var(--canvas);
+  --color-raised: var(--raised);
+  --color-inset: var(--inset);
+  --color-obsidian: var(--obsidian);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--backdrop);
+  color: var(--ink);
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+}
+
+@layer components {
+  /* Main floating window */
+  .nm-window {
+    background: var(--canvas);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 20px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 20px 40px -10px rgba(0, 0, 0, 0.18),
+      0 4px 12px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+
+  /* Raised card */
+  .nm-card {
+    position: relative;
+    background: linear-gradient(180deg, #e1e2e5 0%, var(--raised) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 16px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 10px 24px -8px rgba(0, 0, 0, 0.16),
+      0 2px 6px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+  .nm-card-primary {
+    box-shadow: 0 0 0 1.5px var(--obsidian), 0 14px 28px -8px rgba(0, 0, 0, 0.22),
+      0 2px 6px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+
+  /* Recessed well (inputs, tables, code) */
+  .nm-inset {
+    background: var(--inset);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 12px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08);
+  }
+  .nm-field {
+    width: 100%;
+    background: var(--inset);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 12px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08);
+    padding: 10px 12px;
+    color: var(--ink);
+    outline: none;
+  }
+  .nm-field::placeholder {
+    color: var(--ink-3);
+  }
+  .nm-field:focus {
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(30, 31, 34, 0.35);
+  }
+  .nm-field:disabled {
+    opacity: 0.55;
+  }
+
+  /* Tactile light button / active pill */
+  .nm-pill {
+    background: linear-gradient(180deg, #e3e4e6 0%, #cfd0d2 100%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+    color: var(--ink);
+    font-weight: 500;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .nm-pill:hover:not(:disabled) {
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.9);
+  }
+  .nm-pill:active:not(:disabled) {
+    transform: translateY(1px);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.12);
+  }
+  .nm-pill:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Primary action: dark anchor button */
+  .nm-dark {
+    background: linear-gradient(180deg, #2c2e33 0%, var(--obsidian) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    color: #f2f3f4;
+    font-weight: 500;
+    transition: transform 0.1s, opacity 0.1s;
+  }
+  .nm-dark:hover:not(:disabled) {
+    background: linear-gradient(180deg, #34363c 0%, #25262a 100%);
+  }
+  .nm-dark:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+  .nm-dark:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Outlined secondary button */
+  .nm-outline {
+    border: 1px solid #9a9ca0;
+    border-radius: 10px;
+    color: var(--ink);
+    background: transparent;
+    font-weight: 500;
+    transition: background 0.15s;
+  }
+  .nm-outline:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.3);
+  }
+  .nm-outline:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Etched groove divider */
+  .nm-groove {
+    height: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+  }
+
+  /* Drafting registration marks in the four corners */
+  .nm-crop::before {
+    --c: rgba(0, 0, 0, 0.15);
+    content: "";
+    position: absolute;
+    inset: 8px;
+    pointer-events: none;
+    background: linear-gradient(var(--c), var(--c)) top left / 12px 1px no-repeat,
+      linear-gradient(var(--c), var(--c)) top left / 1px 12px no-repeat,
+      linear-gradient(var(--c), var(--c)) top right / 12px 1px no-repeat,
+      linear-gradient(var(--c), var(--c)) top right / 1px 12px no-repeat,
+      linear-gradient(var(--c), var(--c)) bottom left / 12px 1px no-repeat,
+      linear-gradient(var(--c), var(--c)) bottom left / 1px 12px no-repeat,
+      linear-gradient(var(--c), var(--c)) bottom right / 12px 1px no-repeat,
+      linear-gradient(var(--c), var(--c)) bottom right / 1px 12px no-repeat;
+  }
+
+  .nm-micro {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+  }
+  .nm-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 2px 10px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .nm-kpi {
+    font-size: 52px;
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
 }

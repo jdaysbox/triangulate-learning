@@ -27,36 +27,36 @@ export default function VisualDiagramCard({
 }: VisualDiagramCardProps) {
   const rows = keyTable ? parseTable(keyTable) : null;
   return (
-    <div className={`rounded-xl border p-6 shadow-sm transition-all ${isDominant ? "border-sky-500 bg-sky-50/40 ring-2 ring-sky-200" : "border-slate-200 bg-white"}`}>
+    <div className={`nm-card nm-crop p-6 ${isDominant ? "nm-card-primary" : ""}`}>
       <div className="mb-4 flex items-center gap-2">
-        <span className="rounded-md bg-sky-100 px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-sky-800">Visual • {percentage}%</span>
-        {isDominant && <span className="rounded-full bg-sky-600 px-2.5 py-0.5 text-xs font-semibold text-white">Primary Match</span>}
+        <span className="nm-badge border border-white/40 bg-[#c9cacd] uppercase tracking-wide text-ink">Visual • {percentage}%</span>
+        {isDominant && <span className="nm-badge bg-obsidian text-white">Primary Match</span>}
       </div>
-      <h3 className="mb-3 text-lg font-bold text-slate-900">{title}</h3>
+      <h3 className="mb-3 text-[20px] font-medium tracking-[-0.01em] text-ink">{title}</h3>
       {asciiDiagram && (
         <div className="mb-4">
-          <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-sky-700">Concept Diagram</p>
-          <pre className="overflow-x-auto rounded-lg border border-sky-100 bg-white p-4 font-mono text-xs leading-snug text-slate-800">{asciiDiagram}</pre>
+          <p className="nm-micro mb-1">Concept Diagram</p>
+          <pre className="nm-inset overflow-x-auto p-4 font-mono text-xs leading-snug text-ink">{asciiDiagram}</pre>
         </div>
       )}
       {keyTable && (
         <div>
-          <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-slate-500">Key Terms &amp; Equations</p>
+          <p className="nm-micro mb-1">Key Terms &amp; Equations</p>
           {rows ? (
-            <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+            <div className="nm-inset overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="border-b border-slate-200 bg-slate-50 text-xs font-bold uppercase text-slate-600">
+                <thead className="border-b border-black/10 text-[11px] font-medium uppercase tracking-wide text-ink-3">
                   <tr>
                     {rows[0].map((h, i) => (
                       <th key={i} className="px-4 py-3"><MathText text={h} /></th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-black/10">
                   {rows.slice(1).map((r, i) => (
-                    <tr key={i} className="transition hover:bg-slate-50/80">
+                    <tr key={i} className="transition hover:bg-white/30">
                       {r.map((c, j) => (
-                        <td key={j} className={`px-4 py-3 ${j === 0 ? "font-semibold text-slate-800" : "text-slate-700"}`}>
+                        <td key={j} className={`px-4 py-3 ${j === 0 ? "font-medium text-ink" : "text-ink-2"}`}>
                           <MathText text={c} />
                         </td>
                       ))}
@@ -66,7 +66,7 @@ export default function VisualDiagramCard({
               </table>
             </div>
           ) : (
-            <pre className="overflow-x-auto rounded-lg border border-slate-200 bg-slate-50 p-4 font-mono text-xs leading-snug text-slate-800">{keyTable}</pre>
+            <pre className="nm-inset overflow-x-auto p-4 font-mono text-xs leading-snug text-ink">{keyTable}</pre>
           )}
         </div>
       )}
